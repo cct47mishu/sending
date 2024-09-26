@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Email</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='email_app/styles.css') }}">
+    <script src="{{ url_for('static', filename='email_app/jquery-3.6.0.min.js') }}"></script>
+</head>
+
+<body>
+    <a href="{{ url_for('home') }}" class="btn btn-secondary home-button">Return to Home Page</a>
+    <div class="container">
+        <h1>Send Emails</h1>
+        <form id="email-form" method="post">
+            <div class="form-group">
+                <label for="conversion_type">Select Conversion Type:</label>
+                <select name="conversion_type" id="conversion_type" class="form-control">
+                    <option value="html_pdf">HTML to PDF</option>
+                    <option value="html_png">HTML to PNG</option>
+                    <option value="html_jpg">HTML to JPG</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sending_method">Select Sending Method:</label>
+                <select name="sending_method" id="sending_method" class="form-control">
+                    <option value="smtp">SMTP</option>
+                    <option value="google_api">Google API</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" id="send-email-btn">Start Sending Emails</button>
+            <br><br>
+            <button type="button" class="btn btn-danger" id="stop-email-btn" style="background-color: red;">Stop Sending Emails</button>
+        </form>
+
+        <div id="progress">
+            <p>Progress: <span id="progress-count">0</span> emails sent</p>
+            <div id="messages"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var emailIndex = 0;
+            var smtpIndex = 0;
+            var stopSending = false;
+
+            $('#send-email-btn').click(function () {
+                $(this).prop('disabled', true);
+                $('#stop-email-btn').prop('disabled', false);
+                $('#messages').empty();
+                $('#progress-count').text(0);
+
+                var conversionType = $('#conversion_type').val();
+                var sendingMethod = $('#sending_method').val();
+                stopSending = false;
+                sendNextEmail(conversionType, sendingMethod);
+            });
+
+            $('#stop-email-btn').click(function () {
+                stopSending = true;
+                $('#send-email-btn').prop('disabled', false);
+                $('#stop-email-btn').prop('disabled', true);
+            });
+
+            function sendNextEmail(conversionType, sendingMethod) {
+                if (stopSending) {
+                    $('#messages').append('<p>Sending process stopped by user.</p>');
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url_for('send_email_ajax') }}",
+                    data: {
+                        email_index: emailIndex,
+                        smtp_index: smtpIndex,
+                        conversion_type: conversionType,
+                        sending_method: sendingMethod
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            emailIndex = response.email_index;
+                            smtpIndex = response.smtp_index;
+                            $('#progress-count').text(emailIndex);
+                            $('#messages').append('<p>' + response.message + '</p>');
+                            sendNextEmail(conversionType, sendingMethod);
+                        } else if (response.status === 'completed') {
+                            $('#messages').append('<p>' + response.message + '</p>');
+                            $('#send-email-btn').prop('disabled', false);
+                            $('#stop-email-btn').prop('disabled', true);
+                        } else if (response.status === 'error') {
+                            $('#messages').append('<p>Error: ' + response.message + '</p>');
+                            $('#send-email-btn').prop('disabled', false);
+                            $('#stop-email-btn').prop('disabled', true);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $('#messages').append('<p>An error occurred: ' + error + '</p>');
+                        $('#send-email-btn').prop('disabled', false);
+                        $('#stop-email-btn').prop('disabled', true);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

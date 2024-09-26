@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
+</head>
+<body>
+    <h1>Contents of {{ folder or 'email_app' }}</h1>
+    <ul>
+        {% for file in files %}
+            <li>
+                <a href="{{ url_for('view_email_app', subpath=(folder + '/' + file if folder else file)) }}">
+                    {{ file }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,8 @@
+Flask
+pandas
+Werkzeug
+pdfkit
+imgkit
+google-api-python-client
+google-auth
+google-auth-oauthlib

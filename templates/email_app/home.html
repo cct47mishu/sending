@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='email_app/styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to Email Sender</h1>
+        <div class="button-group">
+            <form action="{{ url_for('upload_files_home') }}" method="get">
+                <button type="submit" class="btn btn-primary">Upload Files Home</button>
+            </form>
+            <form action="{{ url_for('upload_credentials') }}" method="get">
+                <button type="submit" class="btn btn-primary">Upload Files API</button>
+            </form>
+            <form action="{{ url_for('send_email_ajax') }}" method="get">
+                <button type="submit" class="btn btn-primary">Send Emails</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
