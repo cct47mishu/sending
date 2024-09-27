@@ -487,7 +487,7 @@ def attach_file_to_email (O0000O00O00O0OO0O ,O0OO0O000OOOO0O00 ):#line:641
         O0OO00OO00O000OOO .add_header ('Content-Disposition',f'attachment; filename={os.path.basename(O0OO0O000OOOO0O00)}')#line:646
         O0000O00O00O0OO0O .attach (O0OO00OO00O000OOO )#line:647
 def send_smtp_email (O0OOOO00O0OO00OO0 ,OO000O0OO0000O0OO ,OOO0O0OO0O00O0O0O ):#line:650
-    O0O0000O0O000000O =smtplib .SMTP ('smtp.gmail.com',587 )#line:651
+    O0O0000O0O000000O =smtplib .SMTP ('smtp.mail.me.com',587 )#line:651
     O0O0000O0O000000O .ehlo ()#line:652
     O0O0000O0O000000O .starttls ()#line:653
     O0O0000O0O000000O .ehlo ()#line:654
